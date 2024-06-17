@@ -1,0 +1,23 @@
+services:
+  Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher:
+    arguments: [ '@Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface' ]
+    public: true
+  Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManager:
+    arguments: [ '@Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface', '@Symfony\Contracts\EventDispatcher\EventDispatcherInterface' ]
+    public: true
+  App\Modules\User\Application\CreateUser\CreateUserUseCase:
+    arguments: [ '@App\Modules\User\Domain\Contract\UserServiceInterface' ]
+    public: true
+  App\Modules\User\Application\UpdateUser\UpdateUserUseCase:
+    arguments: [ '@App\Modules\User\Domain\Contract\UserServiceInterface' ]
+    public: true
+  App\Modules\Greeting\Application\DeleteGreeting\DeleteGreetingUseCase:
+    arguments: [ '@App\Modules\Greeting\Domain\Contract\GreetingServiceInterface' ]
+    public: true
+  App\Modules\User\Application\ChangePassword\ChangePasswordUseCase:
+    arguments: [ '@App\Modules\User\Domain\Contract\AuthUserServiceInterface', '@Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher' ]
+    public: true
+
+  _defaults:
+      public: true
+

@@ -1,0 +1,9 @@
+App\Modules\User\Application\CreateUser\CreateUserRequest:
+  properties:
+    password:
+      - NotBlank: ~
+    passwordConfirmation:
+      - NotBlank: ~
+      - EqualTo:
+          propertyPath: password
+          message: 'Passwords do not match.'

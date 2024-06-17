@@ -1,0 +1,9 @@
+App\Modules\User\Application\RegisterAuthUser\RegisterAuthUserRequest:
+  properties:
+    password:
+      - NotBlank: ~
+    passwordConfirmation:
+      - NotBlank: ~
+      - EqualTo:
+          propertyPath: password
+          message: 'Passwords do not match.'

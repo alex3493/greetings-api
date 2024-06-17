@@ -1,0 +1,4 @@
+App\Modules\Greeting\Domain\GreetingVariant:
+  attributes:
+    name:
+      groups: [ 'greeting' ]

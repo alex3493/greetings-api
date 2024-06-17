@@ -1,0 +1,96 @@
+User:
+    properties:
+        id:
+            type: string
+            example: "018f2618-7f89-7437-a561-57ea5e5ad46a"
+        email:
+            type: string
+            example: "user@example.com"
+        firstName:
+            type: string
+            example: "John"
+        lastName:
+            type: string
+            example: "Doe"
+        display_name:
+            type: string
+            example: "John Doe"
+        roles:
+            type: array
+            example: [ "ROLE_USER" ]
+        role:
+            type: string
+            example: "ROLE_USER"
+        auth_tokens:
+            type: array
+            items:
+                $ref: "./auth-token.yaml#/AuthToken"
+
+UserLoggedOut:
+    properties:
+        id:
+            type: string
+            example: "018f2618-7f89-7437-a561-57ea5e5ad46a"
+        email:
+            type: string
+            example: "user@example.com"
+        firstName:
+            type: string
+            example: "John"
+        lastName:
+            type: string
+            example: "Doe"
+        display_name:
+            type: string
+            example: "John Doe"
+        roles:
+            type: array
+            example: [ "ROLE_USER" ]
+        role:
+            type: string
+            example: "ROLE_USER"
+        auth_tokens:
+            type: array
+            example: [ ]
+
+WebUser:
+    properties:
+        id:
+            type: string
+            example: "018f2618-7f89-7437-a561-57ea5e5ad46a"
+        email:
+            type: string
+            example: "user@example.com"
+        firstName:
+            type: string
+            example: "John"
+        lastName:
+            type: string
+            example: "Doe"
+        display_name:
+            type: string
+            example: "John Doe"
+        roles:
+            type: array
+            example: [ "ROLE_USER" ]
+        role:
+            type: string
+            example: "ROLE_USER"
+        auth_tokens:
+            type: array
+            example: [ ]
+
+GreetingAuthor:
+    properties:
+        id:
+            type: string
+            example: "018f2618-7f89-7437-a561-57ea5e5ad46a"
+        firstName:
+            type: string
+            example: "John"
+        lastName:
+            type: string
+            example: "Doe"
+        display_name:
+            type: string
+            example: "John Doe"

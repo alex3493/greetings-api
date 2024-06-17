@@ -1,0 +1,11 @@
+App\Modules\Greeting\Domain\Greeting:
+  properties:
+    text:
+      - NotBlank: { normalizer: 'trim' }
+      - Length:
+          normalizer: 'trim'
+          min: 2
+          max: 150
+          minMessage: 'Greeting text must be at least {{ limit }} characters long'
+          maxMessage: 'Greeting text cannot be longer than {{ limit }} characters'
+

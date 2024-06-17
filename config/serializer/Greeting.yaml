@@ -1,0 +1,19 @@
+App\Modules\Greeting\Domain\Greeting:
+  attributes:
+    id:
+      groups: [ 'greeting' ]
+    text:
+      groups: [ 'greeting' ]
+    variant:
+      groups: [ 'greeting' ]
+    author:
+      groups: [ 'greeting' ]
+    updatedBy:
+      serialized_name: updated_by
+      groups: [ 'greeting' ]
+    createdAt:
+      serialized_name: created_at
+      groups: [ 'greeting' ]
+    updatedAt:
+      serialized_name: updated_at
+      groups: [ 'greeting' ]
