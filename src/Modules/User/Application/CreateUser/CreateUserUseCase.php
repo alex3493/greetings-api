@@ -20,7 +20,7 @@ class CreateUserUseCase implements UseCaseInterface
     public function run(RequestInterface $request): ResponseInterface
     {
         /** @var \App\Modules\User\Application\CreateUser\CreateUserRequest $request */
-        $user = $this->service->create($request->email->getValue(), $request->password, $request->firstName,
+        $user = $this->service->create($request->email, $request->password, $request->firstName,
             $request->lastName, $request->roles);
 
         $response = new CreateUserResponse();
