@@ -48,6 +48,15 @@ class User
         $this->authTokens = new ArrayCollection();
     }
 
+    /**
+     * @param string $email
+     * @param string $password
+     * @param string|null $firstName
+     * @param string|null $lastName
+     * @param array $roles
+     * @return \App\Modules\User\Domain\User
+     * @throws \App\Modules\Shared\Domain\Exception\UnprocessableEntityDomainException
+     */
     public static function create(
         string $email, string $password, ?string $firstName, ?string $lastName, array $roles = []
     ): User {
@@ -55,16 +64,26 @@ class User
             new DateTime());
     }
 
+    /**
+     * @return string|null
+     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
+    /**
+     * @param \App\Modules\Shared\Domain\ValueObject\Email $email
+     * @return $this
+     */
     public function setEmail(Email $email): User
     {
         $this->email = $email->getValue();
@@ -72,11 +91,18 @@ class User
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getPassword(): ?string
     {
         return $this->password;
     }
 
+    /**
+     * @param string|null $password
+     * @return $this
+     */
     public function setPassword(?string $password): self
     {
         $this->password = $password;
@@ -84,11 +110,18 @@ class User
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
+    /**
+     * @param string|null $firstName
+     * @return $this
+     */
     public function setFirstName(?string $firstName): User
     {
         $this->firstName = $firstName;
@@ -96,11 +129,18 @@ class User
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
+    /**
+     * @param string|null $lastName
+     * @return $this
+     */
     public function setLastName(?string $lastName): User
     {
         $this->lastName = $lastName;
@@ -108,6 +148,9 @@ class User
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -117,6 +160,10 @@ class User
         return array_unique($roles);
     }
 
+    /**
+     * @param array $roles
+     * @return $this
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -124,11 +171,17 @@ class User
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getRole(): string
     {
         return $this->getRoles()[0];
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
     public function getAuthTokens(): Collection
     {
         // Regular getter.
@@ -151,6 +204,10 @@ class User
     //    $this->authTokens = new ArrayCollection(array_values($authTokens));
     //}
 
+    /**
+     * @param \App\Modules\User\Domain\AuthToken $authToken
+     * @return $this
+     */
     public function addAuthToken(AuthToken $authToken): self
     {
         $this->authTokens->add($authToken);
@@ -158,6 +215,10 @@ class User
         return $this;
     }
 
+    /**
+     * @param \App\Modules\User\Domain\AuthToken $authToken
+     * @return $this
+     */
     public function removeAuthToken(AuthToken $authToken): self
     {
         $this->authTokens->removeElement($authToken);
@@ -165,6 +226,9 @@ class User
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function removeAllAuthTokens(): self
     {
         $this->authTokens->clear();
@@ -172,6 +236,9 @@ class User
         return $this;
     }
 
+    /**
+     * @return \DateTime
+     */
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
@@ -182,6 +249,9 @@ class User
         return $this->email;
     }
 
+    /**
+     * @return string
+     */
     public function getDisplayName(): string
     {
         return $this->firstName.' '.$this->lastName;

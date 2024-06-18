@@ -1,5 +1,8 @@
 App\Modules\User\Application\RegisterAuthUser\RegisterAuthUserRequest:
   properties:
+    email:
+      - Email:
+          message: The email {{ value }} is not a valid email.
     password:
       - NotBlank: ~
     passwordConfirmation:

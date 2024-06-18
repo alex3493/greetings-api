@@ -120,9 +120,10 @@ We have a console command that allows to set up some users. Remember that consol
 You can use Swagger UI at http://localhost:8888 for testing selected API endpoints. Most endpoints require authorization,
 so you will have to run registration / login endpoints first and then copy token from response to authorize subsequent requests.
 
-There is also a frontend counterpart [project](https://github.com/alex3493/symfony-ui) that consumes this project's API.
-It is preconfigured to work with default docker API installation. This application doesn't support registration, so make sure that you
-create some users with `#php bin/console app:add-user` console command in order to be able to log in.
+There is also a frontend counterpart [project](https://github.com/alex3493/greetings-ui) that consumes this project's API.
+It is preconfigured to work with default docker API installation. Use UI registration form to create a user before logging in.
+Keep in mind that all users registered in UI are **regular** users (role USER). More feature testing requires **admin** role users,
+so create some admins with `#php bin/console app:add-user` console command in order to be able to log in as admin.
 
 **Important: we are using HTTPS with self-signed SSL certificate for local development!** Even if you are going to test using UI
 installation, do not forget step 10 from installation instructions, otherwise all requests to API with result in certificate error.

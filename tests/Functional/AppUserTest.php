@@ -74,6 +74,27 @@ class AppUserTest extends DatabaseTestCase
         $this->assertEquals('email', $response->errors[0]->property);
     }
 
+    public function test_register_a_user_error_invalid_email(): void
+    {
+        $client = self::getReusableClient();
+
+        $client->jsonRequest('POST', '/api/app/register', [
+            'email' => 'invalid.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'first_name' => 'First',
+            'last_name' => 'Last',
+            'device_name' => 'iPhone 15',
+        ]);
+
+        $response = json_decode($client->getResponse()->getContent());
+
+        $this->assertEquals('Validation failed.', $response->message);
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertCount(1, $response->errors);
+        $this->assertEquals('email', $response->errors[0]->property);
+    }
+
     public function test_register_user_error_missing_password(): void
     {
         $client = self::getReusableClient();

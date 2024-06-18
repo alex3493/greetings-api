@@ -4,12 +4,11 @@ declare(strict_types=1);
 namespace App\Modules\User\Application\CreateUser;
 
 use App\Modules\Shared\Application\ValidatedRequest;
-use App\Modules\Shared\Domain\ValueObject\Email;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateUserRequest extends ValidatedRequest
 {
-    public Email $email;
+    public string $email;
 
     public string $password;
 
@@ -27,7 +26,7 @@ class CreateUserRequest extends ValidatedRequest
     ) {
         parent::__construct($validator);
 
-        $this->email = new Email($email);
+        $this->email = $email;
         $this->password = $password;
         $this->passwordConfirmation = $passwordConfirmation;
         $this->firstName = $firstName;
