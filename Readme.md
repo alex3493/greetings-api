@@ -4,9 +4,7 @@
 
 This is a complete stack for running Symfony 7.0 in Docker containers using docker-compose tool.
 
-Inspired by [Boilerplate para Symfony basado en Docker, NGINX y PHP8](https://youtu.be/A82-hry3Zvw)
-
-It is composed of 5 containers:
+It is composed of 6 containers:
 
 - `nginx` - acting as the webserver.
 - `php` - the PHP-FPM container with the 8.3 version of PHP.
@@ -15,13 +13,25 @@ It is composed of 5 containers:
 - `mailer` - Mailpit testing mail server (currently not used).
 - `swagger-ui` - OpenAPI documentation
 
-This project follows Hexagonal architecture principles. 
+This project follows Hexagonal architecture principles.
+
+We implement a super-basic CRUD for *Greeting* entity with user authentication and authorization. *Greeting* has the following properties:
+- `id` - unique ID
+- `text` - greeting text
+- `variant` - greeting "mood", *primary*, *secondary*, *success* or *warning*
+- `author` - the user who created the greeting
+- `updatedBy` - the user who updated the greeting
+- `creeatedAt` - creation time
+- `updatedAt` - update time or NULL if greeting was never updated
+
+## Project structure
 
 All controller entry points are located in `src/EntryPoint/Http/Controllers` folder.
 
 Modules:
 - `Shared` - classes designed for general use.
 - `User` - classes related to user and authentication.
+- `Greeting` - classes related to greeting management.
 
 This is a pure **API** application. You can browse Open API docs (see below) to explore and test API responses.
 
@@ -34,7 +44,7 @@ Two route patterns are created for these auth methods:
 - `^/api/web` - JWT (browser)
 - `^/api/app` - Auth token (mobile app)
 
-**Main actions (auth token):**
+**Account actions (auth token):**
 - User can register. If registration is successful user is automatically logged in on a device used for registration.
 - User can log in on multiple devices. Each registered device provides its own token that can be used to access protected pages.
 - User can log out from a given device.
@@ -43,13 +53,36 @@ Two route patterns are created for these auth methods:
 - User can update profile (firstname and lastname).
 - User can delete his account.
 
-**Main actions (JWT):**
+**Account actions (JWT):**
 - User can register.
 - User can log in. Each login generates token (JWT) and refresh token. JWT can be used to access protected pages. Refresh token will authorize new JWT generation when the current one expires.
 - User can log out.
 - User can change password.
 - User can update profile (firstname and lastname).
 - User can delete his account.
+
+We support two types of users: **admin** user and **regular** user. 
+
+**Greeting actions:**
+- User can create a greeting.
+- User can edit own greeting.
+- User can delete own greeting.
+- Admin user can edit any greeting.
+- Admin user can delete any greeting.
+
+We leverage Symfony Mercure (SSE) to implement real-time updates for all connected UI clients. Whenever a greeting is created,
+updated or deleted we publish a Mercure update, so that all clients see updates without the need of page reload.
+
+SSE updates also provide an easy way to solve conflicts when multiple users are editing the same greeting at the same time.
+For example, if a greeting is open in edit form by the first user and another user has updated this greeting in the meanwhile,
+we show an alert in edit form and require that the first user accepts recent changes before he can save the greeting.
+
+If a greeting was deleted by another user we also show an alert in edit form and this time the only action available is to close form.
+
+We have also added Pusher support for demo purposes. Admins can send *Admin greetings* that will show up as toast alert
+for all connected UI clients. These greetings are not persisted anywhere.
+
+*Note: For Pusher feature you have to configure service using your own Pusher account data, see step 8 in installation instructions*
 
 ## Installation
 
@@ -87,10 +120,11 @@ We have a console command that allows to set up some users. Remember that consol
 You can use Swagger UI at http://localhost:8888 for testing selected API endpoints. Most endpoints require authorization,
 so you will have to run registration / login endpoints first and then copy token from response to authorize subsequent requests.
 
-There is also a frontend counterpart [project](https://github.com/alex3493/symfony-vue) that consumes this project's API.
-It is preconfigured to work with default docker API installation.
+There is also a frontend counterpart [project](https://github.com/alex3493/symfony-ui) that consumes this project's API.
+It is preconfigured to work with default docker API installation. This application doesn't support registration, so make sure that you
+create some users with `#php bin/console app:add-user` console command in order to be able to log in.
 
-**Important: we are using HTTPS with self-signed SSL certificate for local development!** Even if you are going to test from UI
+**Important: we are using HTTPS with self-signed SSL certificate for local development!** Even if you are going to test using UI
 installation, do not forget step 10 from installation instructions, otherwise all requests to API with result in certificate error.
 
 ## What's next
@@ -112,13 +146,15 @@ MYSQL_PASSWORD=secret
 Make sure that you rebuild containers after database setting are changed. In local project folder cd to `.docker`, then:
 - `docker compose down --remove-orphans`
 - `docker compose build --no-cache` (optional, just to make sure we have fresh images)
-- `docker compose up -d`
+- `docker compose up --pull always --wait -d`
 
 ## Adding more features
 
 If you need to install more Symfony packages you have to do it inside docker `php` container.
 
-If you need to process Symfony messenger queue, cron jobs, etc., you will have to launch background processes in `php` container.
+Symfony messenger queue worker is started automatically when docker container is started.
+
+If you need more tasks, e.g. cron jobs, etc., you will have to launch background processes in `php` container.
 E.g. [Run multiple processes in a container](https://docs.docker.com/config/containers/multi-service_container/)
 
 
