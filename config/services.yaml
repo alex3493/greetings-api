@@ -6,7 +6,8 @@
 parameters:
   app.auth_token_expiration_minutes: 43200 # 30 days.
   # app.auth_token_expiration_minutes: 0 # Never expires.
-  security.authentication.manager.erase_credentials: false # Temporal setting.
+  # We need the setting below to avoid erasing user hashed password from DB on login.
+  security.authentication.manager.erase_credentials: false
 
 services:
   # default configuration for services in *this* file
