@@ -254,6 +254,12 @@ class User
      */
     public function getDisplayName(): string
     {
-        return $this->firstName.' '.$this->lastName;
+        $name = $this->firstName.' '.$this->lastName;
+
+        if (empty(trim($name))) {
+            $name = $this->email;
+        }
+
+        return trim($name);
     }
 }
