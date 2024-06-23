@@ -3,6 +3,7 @@ App\Modules\User\Application\CreateUser\CreateUserRequest:
     email:
       - Email:
           message: The email {{ value }} is not a valid email.
+      - NotBlank: ~
     password:
       - NotBlank: ~
     passwordConfirmation:
