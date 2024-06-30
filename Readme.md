@@ -120,11 +120,11 @@ We have a console command that allows to set up some users. Remember that consol
 You can use Swagger UI at http://localhost:8888 for testing selected API endpoints. Most endpoints require authorization,
 so you will have to run registration / login endpoints first and then copy token from response to authorize subsequent requests.
 
-There is also frontend counterpart projects that consume this project's API:
+You can also use one of frontend counterpart projects that consume this API:
 - [Vue](https://github.com/alex3493/greetings-ui)
 - [React](https://github.com/alex3493/greetings-react-ui)
 
-They are preconfigured to work with default docker API installation. Use UI registration form to create a user before logging in.
+These projects are preconfigured to work with default docker API installation. Use UI registration form to create a user before logging in.
 Keep in mind that all users registered in UI are **regular** users (role USER). More feature testing requires **admin** role users,
 so create some admins with `#php bin/console app:add-user` console command in order to be able to log in as admin.
 
