@@ -7,19 +7,16 @@ use App\EntryPoint\Http\Contract\AbstractApiController;
 use App\Modules\User\Application\ChangePassword\ChangePasswordRequest;
 use App\Modules\User\Application\ChangePassword\ChangePasswordUseCase;
 use App\Modules\User\Application\CreateUser\CreateUserRequest;
-use App\Modules\User\Application\CreateUser\CreateUserResponse;
 use App\Modules\User\Application\CreateUser\CreateUserUseCase;
 use App\Modules\User\Application\DeleteAuthUser\DeleteAuthUserRequest;
 use App\Modules\User\Application\DeleteAuthUser\DeleteAuthUserUseCase;
 use App\Modules\User\Application\LoginAuthUser\LoginAuthUserRequest;
-use App\Modules\User\Application\LoginAuthUser\LoginAuthUserResponse;
 use App\Modules\User\Application\LoginAuthUser\LoginAuthUserUseCase;
 use App\Modules\User\Application\LogoutAuthUser\LogoutAuthUserRequest;
 use App\Modules\User\Application\LogoutAuthUser\LogoutAuthUserUseCase;
 use App\Modules\User\Application\LogoutWebUser\LogoutWebUserRequest;
 use App\Modules\User\Application\LogoutWebUser\LogoutWebUserUseCase;
 use App\Modules\User\Application\RegisterAuthUser\RegisterAuthUserRequest;
-use App\Modules\User\Application\RegisterAuthUser\RegisterAuthUserResponse;
 use App\Modules\User\Application\RegisterAuthUser\RegisterAuthUserUseCase;
 use App\Modules\User\Application\SignOutAuthUser\SignOutAuthUserRequest;
 use App\Modules\User\Application\SignOutAuthUser\SignOutAuthUserUseCase;
@@ -60,7 +57,6 @@ class AuthUserController extends AbstractApiController
 
         $useCaseRequest->validate('User');
 
-        /** @var RegisterAuthUserResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize([
@@ -98,7 +94,6 @@ class AuthUserController extends AbstractApiController
 
         $useCaseRequest->validate('User');
 
-        /** @var CreateUserResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize([
@@ -127,7 +122,6 @@ class AuthUserController extends AbstractApiController
         ]);
         $useCaseRequest = new LoginAuthUserRequest($jsonData['email'], $jsonData['password'], $jsonData['deviceName']);
 
-        /** @var LoginAuthUserResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize([
@@ -149,7 +143,6 @@ class AuthUserController extends AbstractApiController
     {
         $useCaseRequest = new LogoutAuthUserRequest($tokenId);
 
-        /** @var \App\Modules\User\Application\LogoutAuthUser\LogoutAuthUserResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         // Reserved: we can reinit auth tokens collection before normalizing. For now, we
@@ -199,7 +192,6 @@ class AuthUserController extends AbstractApiController
 
         $useCaseRequest = new LogoutWebUserRequest($userId);
 
-        /** @var \App\Modules\User\Application\LogoutWebUser\LogoutWebUserResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize($response, 'json');
@@ -227,7 +219,6 @@ class AuthUserController extends AbstractApiController
 
         $useCaseRequest = new UpdateUserRequest($userId, $jsonData['firstName'], $jsonData['lastName']);
 
-        /** @var \App\Modules\User\Application\UpdateUser\UpdateUserResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize([
@@ -266,7 +257,6 @@ class AuthUserController extends AbstractApiController
 
         $useCaseRequest->validate('User');
 
-        /** @var \App\Modules\User\Application\ChangePassword\ChangePasswordResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize([
@@ -297,7 +287,6 @@ class AuthUserController extends AbstractApiController
 
         $useCaseRequest = new DeleteAuthUserRequest($userId, $jsonData['password']);
 
-        /** @var \App\Modules\User\Application\DeleteAuthUser\DeleteAuthUserResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize($response, 'json');

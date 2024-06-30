@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Modules\User\Application\DeleteAuthUser;
 
 use App\Modules\Shared\Application\Contract\RequestInterface;
-use App\Modules\Shared\Application\Contract\ResponseInterface;
 use App\Modules\Shared\Application\Contract\UseCaseInterface;
 use App\Modules\User\Domain\Contract\AuthUserServiceInterface;
 
@@ -17,7 +16,7 @@ class DeleteAuthUserUseCase implements UseCaseInterface
         $this->service = $service;
     }
 
-    public function run(RequestInterface $request): ResponseInterface
+    public function run(RequestInterface $request): DeleteAuthUserResponse
     {
         /** @var \App\Modules\User\Application\DeleteAuthUser\DeleteAuthUserRequest $request */
         $this->service->deleteAccount($request->id, $request->password);

@@ -46,6 +46,7 @@ class AuthUserService implements AuthUserServiceInterface
      * @param string|null $lastName
      * @param string|null $deviceName
      * @return array
+     * @throws \App\Modules\Shared\Domain\Exception\UnprocessableEntityDomainException
      * @throws \App\Modules\Shared\Domain\Exception\ValidationException
      */
     public function register(

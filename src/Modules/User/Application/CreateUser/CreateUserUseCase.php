@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Modules\User\Application\CreateUser;
 
 use App\Modules\Shared\Application\Contract\RequestInterface;
-use App\Modules\Shared\Application\Contract\ResponseInterface;
 use App\Modules\Shared\Application\Contract\UseCaseInterface;
 use App\Modules\User\Domain\Contract\UserServiceInterface;
 
@@ -17,7 +16,7 @@ class CreateUserUseCase implements UseCaseInterface
         $this->service = $service;
     }
 
-    public function run(RequestInterface $request): ResponseInterface
+    public function run(RequestInterface $request): CreateUserResponse
     {
         /** @var \App\Modules\User\Application\CreateUser\CreateUserRequest $request */
         $user = $this->service->create($request->email, $request->password, $request->firstName,

@@ -5,7 +5,6 @@ namespace App\Modules\Greeting\Application\CreateGreeting;
 
 use App\Modules\Greeting\Domain\Contract\GreetingServiceInterface;
 use App\Modules\Shared\Application\Contract\RequestInterface;
-use App\Modules\Shared\Application\Contract\ResponseInterface;
 use App\Modules\Shared\Application\Contract\UseCaseInterface;
 
 class CreateGreetingUseCase implements UseCaseInterface
@@ -17,7 +16,7 @@ class CreateGreetingUseCase implements UseCaseInterface
         $this->service = $service;
     }
 
-    public function run(RequestInterface $request): ResponseInterface
+    public function run(RequestInterface $request): CreateGreetingResponse
     {
         /** @var \App\Modules\Greeting\Application\CreateGreeting\CreateGreetingRequest $request */
         $greeting = $this->service->create($request->text, $request->variant, $request->authorId);

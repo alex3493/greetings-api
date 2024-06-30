@@ -7,7 +7,7 @@ namespace App\Modules\Shared\Domain\Exception;
  */
 class FormValidationException extends DomainException
 {
-    private array $errors = [];
+    private array $errors;
 
     public function __construct(string $description, array $errors = [])
     {

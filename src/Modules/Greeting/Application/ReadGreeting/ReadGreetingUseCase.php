@@ -5,7 +5,6 @@ namespace App\Modules\Greeting\Application\ReadGreeting;
 
 use App\Modules\Greeting\Domain\Contract\GreetingServiceInterface;
 use App\Modules\Shared\Application\Contract\RequestInterface;
-use App\Modules\Shared\Application\Contract\ResponseInterface;
 use App\Modules\Shared\Application\Contract\UseCaseInterface;
 
 class ReadGreetingUseCase implements UseCaseInterface
@@ -17,7 +16,7 @@ class ReadGreetingUseCase implements UseCaseInterface
         $this->service = $service;
     }
 
-    public function run(RequestInterface $request): ResponseInterface
+    public function run(RequestInterface $request): ReadGreetingResponse
     {
         /** @var \App\Modules\Greeting\Application\ReadGreeting\ReadGreetingRequest $request */
         $greeting = $this->service->read($request->id);

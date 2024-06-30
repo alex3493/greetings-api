@@ -87,6 +87,12 @@ class NotificationController extends AbstractApiController
         ]);
     }
 
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\Messenger\MessageBusInterface $bus
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \App\Modules\Shared\Domain\Exception\BadRequestDomainException
+     */
     #[Route('/web/test-mercure', name: 'web-test-mercure', methods: ['POST'])]
     #[Route('/app/test-mercure', name: 'app-test-mercure', methods: ['POST'])]
     public function testMercure(

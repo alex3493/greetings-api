@@ -30,6 +30,13 @@ class UserService implements UserServiceInterface
     }
 
     /**
+     * @param string $email
+     * @param string|null $password
+     * @param string|null $firstName
+     * @param string|null $lastName
+     * @param array $roles
+     * @return \App\Modules\User\Domain\User
+     * @throws \App\Modules\Shared\Domain\Exception\UnprocessableEntityDomainException
      * @throws \App\Modules\Shared\Domain\Exception\ValidationException
      */
     public function create(string $email, ?string $password, ?string $firstName, ?string $lastName, array $roles = []

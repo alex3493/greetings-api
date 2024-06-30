@@ -10,7 +10,6 @@ use App\Modules\Greeting\Application\DeleteGreeting\DeleteGreetingUseCase;
 use App\Modules\Greeting\Application\ListGreetings\ListGreetingsRequest;
 use App\Modules\Greeting\Application\ListGreetings\ListGreetingsUseCase;
 use App\Modules\Greeting\Application\ReadGreeting\ReadGreetingRequest;
-use App\Modules\Greeting\Application\ReadGreeting\ReadGreetingResponse;
 use App\Modules\Greeting\Application\ReadGreeting\ReadGreetingUseCase;
 use App\Modules\Greeting\Application\UpdateGreeting\UpdateGreetingRequest;
 use App\Modules\Greeting\Application\UpdateGreeting\UpdateGreetingUseCase;
@@ -50,7 +49,6 @@ class GreetingController extends AbstractApiController
         $useCaseRequest = new CreateGreetingRequest($jsonData['text'],
             $jsonData['variant'] ?? GreetingVariant::SECONDARY, $authorId);
 
-        /** @var \App\Modules\Greeting\Application\CreateGreeting\CreateGreetingResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize([
@@ -80,7 +78,6 @@ class GreetingController extends AbstractApiController
 
         $useCaseRequest = new ListGreetingsRequest($queryData['limit'], $queryData['offset']);
 
-        /** @var \App\Modules\Greeting\Application\ListGreetings\ListGreetingsResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize([
@@ -114,7 +111,6 @@ class GreetingController extends AbstractApiController
         $useCaseRequest = new UpdateGreetingRequest($greetingId, $jsonData['text'], $jsonData['variant'] ?? null,
             $causerId);
 
-        /** @var \App\Modules\Greeting\Application\UpdateGreeting\UpdateGreetingResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize([
@@ -129,6 +125,7 @@ class GreetingController extends AbstractApiController
      * @param string $greetingId
      * @param \App\Modules\Greeting\Application\DeleteGreeting\DeleteGreetingUseCase $useCase
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \App\Modules\Shared\Domain\Exception\AccessDeniedDomainException
      */
     #[Route('/web/greeting/{greetingId}', name: 'web-greeting-delete', methods: ['DELETE'])]
     #[Route('/app/greeting/{greetingId}', name: 'app-greeting-delete', methods: ['DELETE'])]
@@ -138,7 +135,6 @@ class GreetingController extends AbstractApiController
 
         $useCaseRequest = new DeleteGreetingRequest($greetingId, $causerId);
 
-        /** @var \App\Modules\Shared\Application\MessageResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         return $this->json($response);
@@ -160,7 +156,6 @@ class GreetingController extends AbstractApiController
 
         $useCaseRequest = new ReadGreetingRequest($greetingId);
 
-        /** @var ReadGreetingResponse $response */
         $response = $useCase->run($useCaseRequest);
 
         $data = $this->serializer->serialize([

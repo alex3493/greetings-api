@@ -13,7 +13,7 @@ class AuthTokenService implements AuthTokenServiceInterface
 {
     private AuthTokenRepository $repository;
 
-    private $params;
+    private ContainerBagInterface $params;
 
     public function __construct(AuthTokenRepository $repository, ContainerBagInterface $params)
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Modules\User\Application\RegisterAuthUser;
 
 use App\Modules\Shared\Application\Contract\RequestInterface;
-use App\Modules\Shared\Application\Contract\ResponseInterface;
 use App\Modules\Shared\Application\Contract\UseCaseInterface;
 use App\Modules\User\Domain\Contract\AuthUserServiceInterface;
 
@@ -17,7 +16,7 @@ class RegisterAuthUserUseCase implements UseCaseInterface
         $this->service = $service;
     }
 
-    public function run(RequestInterface $request): ResponseInterface
+    public function run(RequestInterface $request): RegisterAuthUserResponse
     {
         /** @var \App\Modules\User\Application\RegisterAuthUser\RegisterAuthUserRequest $request */
         [$user, $token] = $this->service->register($request->email, $request->password, $request->firstName,

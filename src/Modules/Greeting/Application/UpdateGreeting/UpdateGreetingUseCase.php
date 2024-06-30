@@ -5,7 +5,6 @@ namespace App\Modules\Greeting\Application\UpdateGreeting;
 
 use App\Modules\Greeting\Domain\Contract\GreetingServiceInterface;
 use App\Modules\Shared\Application\Contract\RequestInterface;
-use App\Modules\Shared\Application\Contract\ResponseInterface;
 use App\Modules\Shared\Application\Contract\UseCaseInterface;
 
 class UpdateGreetingUseCase implements UseCaseInterface
@@ -17,7 +16,7 @@ class UpdateGreetingUseCase implements UseCaseInterface
         $this->service = $service;
     }
 
-    public function run(RequestInterface $request): ResponseInterface
+    public function run(RequestInterface $request): UpdateGreetingResponse
     {
         /** @var \App\Modules\Greeting\Application\UpdateGreeting\UpdateGreetingRequest $request */
         $greeting = $this->service->update($request->id, $request->text, $request->variant, $request->causerId);
