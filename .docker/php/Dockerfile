@@ -40,3 +40,10 @@ RUN mkdir -p var/www/symfony/var/log var/www/symfony/var/cache/prod var/www/symf
 WORKDIR /var/www/symfony
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+COPY entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
