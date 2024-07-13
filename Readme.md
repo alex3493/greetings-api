@@ -44,9 +44,9 @@ We support two authentication methods:
   A new token is generated after each successful registration or login. Client app should store this token in secure
   area and use it for all subsequent requests.
 - Single page web application, providing user authentication via **JWT** with **token refresh** support. Client browser
-  should store provided token in local storage (after successful login) and use it for all subsequent requests.
+  should store provided tokens in local storage and use them for all subsequent requests.
 
-Depending on the authentication mode all subsequent requests should use one of these patterns:
+Depending on the authentication mode all subsequent requests should use one of these route patterns:
 
 - `^/api/app/` - Auth token (mobile app)
 - `^/api/web/` - JWT (browser)
@@ -104,7 +104,7 @@ instructions*
 ## Installation
 
 1. Clone this repo.
-2. Go inside `./docker` folder and run `docker compose up -d` to start container.
+2. Go inside `./docker` folder and run `docker compose up -d` to start containers.
 3. Add your Pusher account settings: create `.env.local` file in project root and fill in you data.
 
 ```
@@ -120,12 +120,12 @@ PUSHER_APP_CLUSTER=mt1
 ```
 
 4. Add symfony.test to your operating system *hosts* file.
-5. Open https://symfony.test in browser and accept security warning about self-signed certificates.
+5. Open https://symfony.test in browser and accept security warning (self-signed certificates).
 6. Browse OpenAPI docs: http://localhost:8888
 
 ## How to test
 
-**Console commands should be executed inside `php` containers.**
+**Console commands should be executed inside `php` container.**
 
 Run `docker exec -it php bash` or use your favourite Docker desktop application `php` container Exec tab.
 
@@ -137,14 +137,12 @@ You can use the following credentials right away:
 - email: admin@greetings.com
 - password: password
 
-We also have a console command that allows to set up more users: `#php bin/console app:add-user`. Remember that console
-commands should be executed inside
-docker `php` container.
+You can create more users running console command: `#php bin/console app:add-user`. Remember that console
+commands should be executed inside docker `php` container.
 
 You can use Swagger UI at http://localhost:8888 for testing selected API endpoints. Most endpoints require
-authorization,
-so you will have to run registration / login first and then copy token from response to authorize subsequent
-requests.
+authorization, so you will have to run registration / login first and then copy token from response to authorize
+subsequent requests.
 
 You can also use one of frontend counterpart projects that consume this API:
 
@@ -154,14 +152,13 @@ You can also use one of frontend counterpart projects that consume this API:
 These projects are preconfigured to work with default docker API installation.
 
 You can log in as admin using default credentials (admin@greetings.com / password) and/or use UI registration form to
-create a user.
+create new users.
 
 Keep in mind that all users registered in UI are **regular** users (role USER). Some features testing require **admin**
 role users, if you need more admin users you can create them with `#php bin/console app:add-user` console command.
 
 **Important: we are using HTTPS with self-signed SSL certificate for local development!** Even if you are going to test
-using UI
-installation, do not forget step 5 from installation instructions, otherwise all requests to API with result in
+using UI installation, do not forget step 5 from installation instructions, otherwise all requests to API with result in
 certificate error.
 
 ## What's next
