@@ -22,7 +22,7 @@ following properties:
 - `text` - greeting text
 - `variant` - greeting "mood", *primary*, *secondary*, *success* or *warning*
 - `author` - the user who created the greeting
-- `updatedBy` - the user who updated the greeting
+- `updatedBy` - the user who updated the greeting (or NULL if greeting was never updated)
 - `creeatedAt` - creation time
 - `updatedAt` - update time or NULL if greeting was never updated
 
@@ -46,10 +46,10 @@ We support two authentication methods:
 - Single page web application, providing user authentication via **JWT** with **token refresh** support. Client browser
   should store provided token in local storage (after successful login) and use it for all subsequent requests.
 
-Two route patterns are created for these auth methods:
+Depending on the authentication mode all subsequent requests should use one of these patterns:
 
-- `^/api/web` - JWT (browser)
-- `^/api/app` - Auth token (mobile app)
+- `^/api/app/` - Auth token (mobile app)
+- `^/api/web/` - JWT (browser)
 
 **Account actions (auth token):**
 
@@ -98,7 +98,7 @@ to close form.
 We have also added Pusher support for demo purposes. Admins can send *Admin greetings* that will show up as toast alert
 for all connected UI clients. These greetings are not persisted anywhere.
 
-*Note: For Pusher feature you have to configure service using your own Pusher account data, see step 8 in installation
+*Note: For Pusher feature you have to configure service using your own Pusher account data, see step 3 in installation
 instructions*
 
 ## Installation
@@ -129,22 +129,21 @@ PUSHER_APP_CLUSTER=mt1
 
 Run `docker exec -it php bash` or use your favourite Docker desktop application `php` container Exec tab.
 
-Run tests: `#php ./vendor/bin/phpunit`. Current project setup uses in-memory Sqlite database for testing, so
-migrations are done automatically before each test.
+Run tests: `#php ./vendor/bin/phpunit`.
 
-Default Admin user is created automatically when docker containers are created for the first time.
-You can use these credentials right away:
+A default Admin user is created when you run docker containers for the first time.
+You can use the following credentials right away:
 
 - email: admin@greetings.com
 - password: password
 
-We also have a console command that allows to set up more users. Remember that console commands should be run inside
+We also have a console command that allows to set up more users: `#php bin/console app:add-user`. Remember that console
+commands should be executed inside
 docker `php` container.
-`#php bin/console app:add-user`
 
 You can use Swagger UI at http://localhost:8888 for testing selected API endpoints. Most endpoints require
 authorization,
-so you will have to run registration / login endpoints first and then copy token from response to authorize subsequent
+so you will have to run registration / login first and then copy token from response to authorize subsequent
 requests.
 
 You can also use one of frontend counterpart projects that consume this API:
@@ -152,15 +151,17 @@ You can also use one of frontend counterpart projects that consume this API:
 - [Vue](https://github.com/alex3493/greetings-ui)
 - [React](https://github.com/alex3493/greetings-react-ui)
 
-These projects are preconfigured to work with default docker API installation. Use UI registration form to create a user
-before logging in.
-Keep in mind that all users registered in UI are **regular** users (role USER). More feature testing requires **admin**
-role users,
-so create some admins with `#php bin/console app:add-user` console command in order to be able to log in as admin.
+These projects are preconfigured to work with default docker API installation.
+
+You can log in as admin using default credentials (admin@greetings.com / password) and/or use UI registration form to
+create a user.
+
+Keep in mind that all users registered in UI are **regular** users (role USER). Some features testing require **admin**
+role users, if you need more admin users you can create them with `#php bin/console app:add-user` console command.
 
 **Important: we are using HTTPS with self-signed SSL certificate for local development!** Even if you are going to test
 using UI
-installation, do not forget step 10 from installation instructions, otherwise all requests to API with result in
+installation, do not forget step 5 from installation instructions, otherwise all requests to API with result in
 certificate error.
 
 ## What's next
