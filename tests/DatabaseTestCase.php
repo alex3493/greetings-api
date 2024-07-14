@@ -33,7 +33,7 @@ class DatabaseTestCase extends WebTestCase
             throw new LogicException('Execution only in Test environment possible!');
         }
 
-        $this->initDatabase();
+        // $this->initDatabase();
 
         $container = static::getContainer();
         $passwordHasher = $container->get(UserPasswordHasher::class);
