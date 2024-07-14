@@ -41,9 +41,10 @@ class UserTest extends DatabaseTestCase
         $connection = $this->getEntityManager()->getConnection();
         $sql = 'SELECT roles FROM user WHERE id = :id';
         $stmt = $connection->prepare($sql);
+        $stmt->bindValue('id', $response->user->getId());
 
         /** @var \Doctrine\DBAL\Result $result */
-        $result = $stmt->executeQuery(['id' => $response->user->getId()]);
+        $result = $stmt->executeQuery();
         $roles = json_decode($result->fetchOne());
 
         // Check that role is persisted in DB. We cannot use User::getRoles() because it
