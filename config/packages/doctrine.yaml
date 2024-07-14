@@ -31,7 +31,7 @@ doctrine:
                 type: xml
                 dir: '%kernel.project_dir%/src/Modules/Greeting/Infrastructure/Persistence/Doctrine/Mapping'
                 prefix: 'App\Modules\Greeting\Domain'
-                alias: App\Modules\User\Domain
+                alias: App\Modules\Greeting\Domain
 
         controller_resolver:
             auto_mapping: true

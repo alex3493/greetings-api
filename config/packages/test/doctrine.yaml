@@ -1,8 +1,13 @@
 doctrine:
     dbal:
+#        driver: 'pdo_sqlite'
         url: '%env(resolve:DATABASE_URL)%'
-        # memory: true
     orm:
+#       Required when we use Sqlite as test database.
+#        dql:
+#            string_functions:
+#                JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonExtract
+#                JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonSearch
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true

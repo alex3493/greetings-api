@@ -3,6 +3,8 @@
 namespace App\Tests;
 
 use App\Tests\Seeder\UserSeeder;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
+use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -36,7 +38,11 @@ class DatabaseTestCase extends WebTestCase
             throw new LogicException('Execution only in Test environment possible!');
         }
 
-        // $this->initDatabase();
+        $platform = $this->getContainer()->get('doctrine')->getConnection()->getDatabasePlatform();
+        if ($platform instanceof SqlitePlatform) {
+            // When testing against Sqlite database we must do special init.
+            $this->initDatabase();
+        }
 
         $container = static::getContainer();
         $passwordHasher = $container->get(UserPasswordHasher::class);
