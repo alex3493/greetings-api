@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ObjectRepository;
+use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManager;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -17,6 +18,8 @@ use Zenstruck\Messenger\Test\InteractsWithMessenger;
 class DatabaseTestCase extends WebTestCase
 {
     use InteractsWithMessenger;
+
+    use ReloadDatabaseTrait;
 
     protected static ?KernelBrowser $client;
 
