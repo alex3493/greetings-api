@@ -3,7 +3,6 @@
 namespace App\Tests;
 
 use App\Tests\Seeder\UserSeeder;
-use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -21,7 +20,8 @@ class DatabaseTestCase extends WebTestCase
 {
     use InteractsWithMessenger;
 
-    use ReloadDatabaseTrait;
+    // Only when using MySql as testing database.
+    // use ReloadDatabaseTrait;
 
     protected static ?KernelBrowser $client;
 
