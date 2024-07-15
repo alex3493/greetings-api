@@ -19,7 +19,7 @@ when@test:
             transports:
                 # replace with your transport name here (e.g., my_transport: 'in-memory://')
                 # For more Messenger testing tools, see https://github.com/zenstruck/messenger-test
-                async: 'test://'
-                failed: 'test://'
+                async: 'test://?support_delay_stamp=true'
+                failed: 'test://?support_delay_stamp=true'
                 # async: 'sync://'
                 # async: 'in-memory://'

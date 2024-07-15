@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-composer install -n
+vendor_dir="/var/www/symfony/vendor"
+if [ ! -d "$vendor_dir" ]; then
+  composer install -n
+fi
 php bin/console lexik:jwt:generate-keypair --skip-if-exists
 php bin/console doctrine:migrations:migrate --no-interaction
 exec "$@"
