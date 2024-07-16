@@ -8,6 +8,7 @@
     <php>
         <ini name="error_reporting" value="-1"/>
         <server name="KERNEL_CLASS" value="App\Kernel"/>
+        <!-- TODO: Make this dynamic ! -->
         <server name="APP_ENV" value="test" force="true"/>
 
         <!--env name="DATABASE_URL" value="sqlite:///:memory:"/-->
