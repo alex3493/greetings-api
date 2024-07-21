@@ -27,7 +27,7 @@ class ExceptionListener
         $request = $event->getRequest();
 
         // Only act if we have an API request (should always be the case).
-        if ('application/json' === $request->headers->get('Content-Type')) {
+        if ('application/json' === $request->headers->get('Accept')) {
             if ($exception instanceof ValidationException) {
                 // Validation exception.
                 $this->logger->debug('ExceptionListener :: Validation exception', ['exception' => $exception]);
@@ -79,6 +79,12 @@ class ExceptionListener
 
             // Send the modified response object to the event.
             $event->setResponse($response);
+        } else {
+            $this->logger->debug('ExceptionListener :: Server error', [
+                'exception' => $exception,
+                'Content-Type header' => $request->headers->get('Content-Type'),
+                'Accept header' => $request->headers->get('Accept'),
+            ]);
         }
     }
 }
