@@ -10,12 +10,12 @@ class ListGreetingsRequest implements RequestInterface
 
     public int $offset;
 
-    public string $afterId;
+    public string $beforeId;
 
-    public function __construct(int $limit, int $offset, string $afterId)
+    public function __construct(int $limit, int $offset, string $beforeId)
     {
         $this->limit = $limit;
         $this->offset = $offset;
-        $this->afterId = $afterId;
+        $this->beforeId = $beforeId;
     }
 }

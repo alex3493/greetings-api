@@ -72,12 +72,12 @@ class GreetingController extends AbstractApiController
         $queryData = $this->getRequestQuery($request, [
             ['limit', 'limit', 10],
             ['offset', 'offset', 0],
-            ['afterId', 'afterId', ''],
+            ['beforeId', 'beforeId', ''],
         ]);
 
         $discovery->addLink($request);
 
-        $useCaseRequest = new ListGreetingsRequest($queryData['limit'], $queryData['offset'], $queryData['afterId']);
+        $useCaseRequest = new ListGreetingsRequest($queryData['limit'], $queryData['offset'], $queryData['beforeId']);
 
         $response = $useCase->run($useCaseRequest);
 

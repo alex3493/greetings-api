@@ -86,13 +86,13 @@ class GreetingService implements GreetingServiceInterface
      * @param int $offset
      * @return array
      */
-    public function list(int $limit, int $offset = 0, string $afterId = ''): array
+    public function list(int $limit, int $offset = 0, string $beforeId = ''): array
     {
         // We are using Uuid::v7 ids, so they are already ordered by date.
         $criteria = Criteria::create()->orderBy(['id' => 'DESC']);
-        if ($afterId) {
-            // $afterId parameter wins if present.
-            $criteria->andWhere(Criteria::expr()->gt("id", $afterId))->setMaxResults($limit);
+        if ($beforeId) {
+            // $beforeId parameter wins if present.
+            $criteria->andWhere(Criteria::expr()->lt("id", $beforeId))->setMaxResults($limit);
         } else {
             // Fallback to $offset.
             $criteria->setMaxResults($limit)->setFirstResult($offset);

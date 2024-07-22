@@ -14,5 +14,5 @@ interface GreetingServiceInterface
 
     public function read(string $id): Greeting;
 
-    public function list(int $limit, int $offset = 0, string $afterId = ''): array;
+    public function list(int $limit, int $offset = 0, string $beforeId = ''): array;
 }

@@ -132,11 +132,11 @@ class GreetingTest extends DatabaseTestCase
             ]);
         }
 
-        $afterId = $greetings[9]->getId();
+        $beforeId = $greetings[10]->getId();
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('GET', '/api/web/greetings?limit=10&afterId='.$afterId, [], [
+        $client->jsonRequest('GET', '/api/web/greetings?limit=10&beforeId='.$beforeId, [], [
             'HTTP_Authorization' => 'Bearer '.$token,
         ]);
 
@@ -145,7 +145,7 @@ class GreetingTest extends DatabaseTestCase
         $response = json_decode($client->getResponse()->getContent());
 
         $this->assertCount(10, $response->greetings);
-        $this->assertEquals('Greeting-19', $response->greetings[0]->text);
+        $this->assertEquals('Greeting-9', $response->greetings[0]->text);
     }
 
     public function test_we_can_update_a_greeting(): void
