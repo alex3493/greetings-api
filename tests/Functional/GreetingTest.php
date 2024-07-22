@@ -110,6 +110,44 @@ class GreetingTest extends DatabaseTestCase
         $this->assertEquals($greetings[0]->getId(), $response->greetings[9]->id);
     }
 
+    public function test_we_can_list_greetings_after_given_id()
+    {
+        $user = static::$userSeeder->seedUser([
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'firstName' => 'First',
+            'lastName' => 'Last',
+            'roles' => ['ROLE_USER'],
+        ], [], true);
+
+        $token = $user['jwt_token'];
+
+        $greetingSeeder = new GreetingSeeder($this->getEntityManager());
+
+        $greetings = [];
+        for ($i = 0; $i < 20; $i++) {
+            $greetings[] = $greetingSeeder->seedGreeting($user['user'], [
+                'text' => 'Greeting-'.$i,
+                'variant' => $i % 2 ? 'primary' : 'secondary',
+            ]);
+        }
+
+        $afterId = $greetings[9]->getId();
+
+        $client = self::getReusableClient();
+
+        $client->jsonRequest('GET', '/api/web/greetings?limit=10&afterId='.$afterId, [], [
+            'HTTP_Authorization' => 'Bearer '.$token,
+        ]);
+
+        $this->assertResponseIsSuccessful();
+
+        $response = json_decode($client->getResponse()->getContent());
+
+        $this->assertCount(10, $response->greetings);
+        $this->assertEquals('Greeting-19', $response->greetings[0]->text);
+    }
+
     public function test_we_can_update_a_greeting(): void
     {
         $user = static::$userSeeder->seedUser([

@@ -12,6 +12,7 @@ use App\Modules\Shared\Domain\Exception\ValidationException;
 use App\Modules\Shared\Domain\Message\MercureUpdateMessage;
 use App\Modules\User\Domain\Contract\UserServiceInterface;
 use DateTime;
+use Doctrine\Common\Collections\Criteria;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -85,10 +86,21 @@ class GreetingService implements GreetingServiceInterface
      * @param int $offset
      * @return array
      */
-    public function list(int $limit, int $offset = 0): array
+    public function list(int $limit, int $offset = 0, string $afterId = ''): array
     {
         // We are using Uuid::v7 ids, so they are already ordered by date.
-        return $this->repository->findBy([], ['id' => 'DESC'], $limit, $offset);
+        $criteria = Criteria::create()->orderBy(['id' => 'DESC']);
+        if ($afterId) {
+            // $afterId parameter wins if present.
+            $criteria->andWhere(Criteria::expr()->gt("id", $afterId))->setMaxResults($limit);
+        } else {
+            // Fallback to $offset.
+            $criteria->setMaxResults($limit)->setFirstResult($offset);
+        }
+
+        return $this->repository->matching($criteria)->toArray();
+
+        // return $this->repository->findBy([], ['id' => 'DESC'], $limit, $offset);
 
         // TODO: Reserved - order by recent "action".
         // Custom combined updatedAt / createdAt order.

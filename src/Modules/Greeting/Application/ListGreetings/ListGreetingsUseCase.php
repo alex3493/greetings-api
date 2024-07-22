@@ -18,7 +18,7 @@ class ListGreetingsUseCase implements UseCaseInterface
     public function run(RequestInterface $request): ListGreetingsResponse
     {
         /** @var \App\Modules\Greeting\Application\ListGreetings\ListGreetingsRequest $request */
-        $greetings = $this->service->list($request->limit, $request->offset);
+        $greetings = $this->service->list($request->limit, $request->offset, $request->afterId);
 
         $response = new ListGreetingsResponse();
         $response->greetings = $greetings;
