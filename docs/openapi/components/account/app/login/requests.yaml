@@ -3,10 +3,10 @@ LoginRequest:
     properties:
         email:
             type: string
-            example: "user@example.com"
+            example: "admin@greetings.com"
         password:
             type: string
-            example: "secret-password"
+            example: "password"
         device_name:
             type: string
             example: "iPhone 15 Pro"
