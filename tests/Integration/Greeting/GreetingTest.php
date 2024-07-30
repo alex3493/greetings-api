@@ -58,7 +58,7 @@ class GreetingTest extends DatabaseTestCase
 
         $container = static::getContainer();
 
-        $request = new ListGreetingsRequest(10, 0);
+        $request = new ListGreetingsRequest(10, 0, '');
 
         /** @var ListGreetingsUseCase $useCase */
         $useCase = $container->get(ListGreetingsUseCase::class);
