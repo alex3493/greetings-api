@@ -1,5 +1,5 @@
 get:
-    description: Get recent greeting list
+    description: Get recent greeting list. We always order greetings by creation date descending (most recent greetings come first).
     tags:
         - Greetings
     security:
@@ -16,7 +16,13 @@ get:
             schema:
                 type: integer
             required: false
-            description: Offset of the first result
+            description: Offset of the first result.
+        -   in: query
+            name: beforeId
+            schema:
+                type: string
+            required: false
+            description: Only include rows with id less than `beforeId`. We are using Uuid::v7 ids, so smaller id effectively means "created before".<br>This parameter is prepared for infinite scroll feature in mobile apps. If query contains both `offset` and `beforeId`, `beforeId` always wins.
     requestBody:
         content:
             application/json: { }

@@ -41,6 +41,7 @@ class NotificationController extends AbstractApiController
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     #[Route('/web/mercure-auth', name: 'web-mercure-auth', methods: ['GET'])]
+    #[Route('/app/mercure-auth', name: 'app-mercure-auth', methods: ['GET'])]
     public function getMercureSubscriptionToken(HubInterface $hub): JsonResponse
     {
         $token = $hub->getProvider()->getJwt();

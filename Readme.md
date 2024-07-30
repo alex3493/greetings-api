@@ -76,6 +76,11 @@ We support two types of users: **admin** user and **regular** user.
 
 **Greeting actions:**
 
+- User can list greetings. For demo purposes we keep it as simple as possible:
+    - Greetings are always ordered by creation date descending.
+    - We only support `limit`, `offset` and `beforeId` query parameters, the latter is prepared for infinite scroll (
+      e.g. mobile app list). If both `offset` and `beforeId` are present, `beforeId` always takes precedence
+      and `offset` is ignored.
 - User can create a greeting.
 - User can edit own greeting.
 - User can delete own greeting.
@@ -122,6 +127,11 @@ PUSHER_APP_CLUSTER=mt1
 4. Add symfony.test to your operating system *hosts* file.
 5. Open https://symfony.test in browser and accept security warning (self-signed certificates).
 6. Browse OpenAPI docs: http://localhost:8888
+
+*Note: `docker compose up -d` command executes entry point script (composer install, migrations if need be, etc.) that
+may take some time on slow systems. If you get 502 bad gateway response when you open https://symfony.test shortly after
+starting docker containers, please, wait for a while or check `php` container logs to make sure that all start up tasks
+are finished.*
 
 ## How to test
 
