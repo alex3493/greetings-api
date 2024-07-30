@@ -5,6 +5,7 @@ namespace App\Modules\Greeting\Infrastructure\Persistence\Doctrine;
 
 use App\Modules\Greeting\Domain\Greeting;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Order;
 use Doctrine\Persistence\ManagerRegistry;
 
 class GreetingRepository extends ServiceEntityRepository
@@ -35,6 +36,7 @@ class GreetingRepository extends ServiceEntityRepository
     }
 
     /**
+     * TODO: Currently not used.
      * @param int $limit
      * @param int $offset
      * @return array
@@ -43,8 +45,8 @@ class GreetingRepository extends ServiceEntityRepository
     {
         $builder = $this->createQueryBuilder('g');
 
-        $builder->addSelect('COALESCE(g.updatedAt, g.createdAt) AS HIDDEN orderColumn')->orderBy('orderColumn', 'DESC')
-                ->setFirstResult($offset)->setMaxResults($limit);
+        $builder->addSelect('COALESCE(g.updatedAt, g.createdAt) AS HIDDEN orderColumn')
+                ->orderBy('orderColumn', Order::Descending)->setFirstResult($offset)->setMaxResults($limit);
 
         return $builder->getQuery()->getResult();
     }
