@@ -141,6 +141,21 @@ Run `docker exec -it php bash` or use your favourite Docker desktop application 
 
 Run tests: `#php ./vendor/bin/phpunit`.
 
+By default, we use blazing-fast Sqlite in-memory database for testing (.env.test):
+
+```
+# Create .env.test.local file in project root and override DATABASE_URL for testing against MySQL database.
+# DATABASE_URL=mysql://root:root@host.docker.internal:3306/symfony?serverVersion=8.0.33
+
+DATABASE_URL="sqlite:///:memory:"
+```
+
+However, you can easily switch to MySQL database for testing:
+
+- Create .env.test.local file in project root
+- Add `DATABASE_URL=mysql://root:root@host.docker.internal:3306/symfony?serverVersion=8.0.33` setting to override
+  default Sqlite option.
+
 A default Admin user is created when you run docker containers for the first time.
 You can use the following credentials right away:
 
