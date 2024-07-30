@@ -22,7 +22,7 @@ get:
             schema:
                 type: string
             required: false
-            description: Only include rows with id less than `beforeId`. We are using Uuid::v7 ids, so smaller id effectively means "created before".<br>This parameter is prepared for infinite scroll feature in mobil apps. If query contains both `offset` and `beforeId`, `beforeId` always wins.
+            description: Only include rows with id less than `beforeId`. We are using Uuid::v7 ids, so smaller id effectively means "created before".<br>This parameter is prepared for infinite scroll feature in mobile apps. If query contains both `offset` and `beforeId`, `beforeId` always wins.
     requestBody:
         content:
             application/json: { }
