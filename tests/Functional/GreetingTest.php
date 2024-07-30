@@ -27,7 +27,7 @@ class GreetingTest extends DatabaseTestCase
             'text' => 'Hi, there!',
             'variant' => 'primary',
         ], [
-            'HTTP_Authorization' => 'Bearer '.$token,
+            'HTTP_Authorization' => 'Bearer ' . $token,
         ]);
 
         $response = json_decode($client->getResponse()->getContent());
@@ -88,7 +88,7 @@ class GreetingTest extends DatabaseTestCase
         $greetings = [];
         for ($i = 0; $i < 10; $i++) {
             $greetings[] = $greetingSeeder->seedGreeting($user['user'], [
-                'text' => 'Greeting-'.$i,
+                'text' => 'Greeting-' . $i,
                 'variant' => $i % 2 ? 'primary' : 'secondary',
             ]);
         }
@@ -96,7 +96,7 @@ class GreetingTest extends DatabaseTestCase
         $client = self::getReusableClient();
 
         $client->jsonRequest('GET', '/api/web/greetings?limit=10&offset=0', [], [
-            'HTTP_Authorization' => 'Bearer '.$token,
+            'HTTP_Authorization' => 'Bearer ' . $token,
         ]);
 
         $response = json_decode($client->getResponse()->getContent());
@@ -110,7 +110,7 @@ class GreetingTest extends DatabaseTestCase
         $this->assertEquals($greetings[0]->getId(), $response->greetings[9]->id);
     }
 
-    public function test_we_can_list_greetings_after_given_id()
+    public function test_we_can_list_greetings_before_given_id()
     {
         $user = static::$userSeeder->seedUser([
             'email' => 'test@example.com',
@@ -127,7 +127,7 @@ class GreetingTest extends DatabaseTestCase
         $greetings = [];
         for ($i = 0; $i < 20; $i++) {
             $greetings[] = $greetingSeeder->seedGreeting($user['user'], [
-                'text' => 'Greeting-'.$i,
+                'text' => 'Greeting-' . $i,
                 'variant' => $i % 2 ? 'primary' : 'secondary',
             ]);
         }
@@ -136,8 +136,8 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('GET', '/api/web/greetings?limit=10&beforeId='.$beforeId, [], [
-            'HTTP_Authorization' => 'Bearer '.$token,
+        $client->jsonRequest('GET', '/api/web/greetings?limit=10&beforeId=' . $beforeId, [], [
+            'HTTP_Authorization' => 'Bearer ' . $token,
         ]);
 
         $this->assertResponseIsSuccessful();
@@ -169,11 +169,11 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('PATCH', '/api/web/greeting/'.$greeting->getId(), [
+        $client->jsonRequest('PATCH', '/api/web/greeting/' . $greeting->getId(), [
             'text' => 'Updated greeting',
             'variant' => 'warning',
         ], [
-            'HTTP_Authorization' => 'Bearer '.$token,
+            'HTTP_Authorization' => 'Bearer ' . $token,
         ]);
 
         $response = json_decode($client->getResponse()->getContent());
@@ -190,7 +190,7 @@ class GreetingTest extends DatabaseTestCase
         $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
 
         // Check that affected greeting id is included into update topic.
-        $this->assertStringEndsWith('/greeting/'.$greeting->getId(), $event->getMessage()->getTopic());
+        $this->assertStringEndsWith('/greeting/' . $greeting->getId(), $event->getMessage()->getTopic());
 
         $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
 
@@ -239,8 +239,8 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('DELETE', '/api/web/greeting/'.$greeting->getId(), [], [
-            'HTTP_Authorization' => 'Bearer '.$token,
+        $client->jsonRequest('DELETE', '/api/web/greeting/' . $greeting->getId(), [], [
+            'HTTP_Authorization' => 'Bearer ' . $token,
         ]);
 
         $response = json_decode($client->getResponse()->getContent());
@@ -265,7 +265,7 @@ class GreetingTest extends DatabaseTestCase
         $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
 
         // Check that affected greeting id is included into update topic.
-        $this->assertStringEndsWith('/greeting/'.$greeting->getId(), $event->getMessage()->getTopic());
+        $this->assertStringEndsWith('/greeting/' . $greeting->getId(), $event->getMessage()->getTopic());
 
         $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
 
@@ -301,8 +301,8 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('GET', '/api/web/greeting/'.$greeting->getId(), [], [
-            'HTTP_Authorization' => 'Bearer '.$token,
+        $client->jsonRequest('GET', '/api/web/greeting/' . $greeting->getId(), [], [
+            'HTTP_Authorization' => 'Bearer ' . $token,
         ]);
 
         $discoveryLink = $client->getResponse()->headers->get('link');
@@ -344,11 +344,11 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('PATCH', '/api/web/greeting/'.$greeting->getId(), [
+        $client->jsonRequest('PATCH', '/api/web/greeting/' . $greeting->getId(), [
             'text' => 'Updated greeting',
             'variant' => 'warning',
         ], [
-            'HTTP_Authorization' => 'Bearer '.$token,
+            'HTTP_Authorization' => 'Bearer ' . $token,
         ]);
 
         $this->assertResponseStatusCodeSame(403);
@@ -383,11 +383,11 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('PATCH', '/api/web/greeting/'.$greeting->getId(), [
+        $client->jsonRequest('PATCH', '/api/web/greeting/' . $greeting->getId(), [
             'text' => 'Updated greeting',
             'variant' => 'warning',
         ], [
-            'HTTP_Authorization' => 'Bearer '.$token,
+            'HTTP_Authorization' => 'Bearer ' . $token,
         ]);
 
         $this->assertResponseIsSuccessful();
@@ -420,7 +420,7 @@ class GreetingTest extends DatabaseTestCase
             'text' => '     ', // Check that trim normalizer works as expected.
             'variant' => 'primary',
         ], [
-            'HTTP_Authorization' => 'Bearer '.$token,
+            'HTTP_Authorization' => 'Bearer ' . $token,
         ]);
 
         $response = json_decode($client->getResponse()->getContent());
