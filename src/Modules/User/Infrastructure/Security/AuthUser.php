@@ -11,9 +11,12 @@ class AuthUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     private User $user;
 
-    public function __construct(User $user)
+    private ?string $deviceId;
+
+    public function __construct(User $user, ?string $deviceId = null)
     {
         $this->user = $user;
+        $this->deviceId = $deviceId;
     }
 
     /**
@@ -74,6 +77,11 @@ class AuthUser implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPassword(): ?string
     {
         return $this->user->getPassword();
+    }
+
+    public function getDeviceId(): ?string
+    {
+        return $this->deviceId;
     }
 
     public function eraseCredentials(): void

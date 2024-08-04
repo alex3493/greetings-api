@@ -11,6 +11,7 @@ use App\Modules\Shared\Domain\Exception\NotFoundDomainException;
 use App\Modules\Shared\Domain\Exception\ValidationException;
 use App\Modules\Shared\Domain\Message\MercureUpdateMessage;
 use App\Modules\User\Domain\Contract\UserServiceInterface;
+use App\Modules\User\Infrastructure\Security\AuthUser;
 use DateTime;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Order;
@@ -33,6 +34,9 @@ class GreetingService implements GreetingServiceInterface
 
     private ValidatorInterface $validator;
 
+    /** @var \App\Modules\User\Infrastructure\Security\AuthUser | null $authUser */
+    private ?AuthUser $authUser;
+
     public function __construct(
         GreetingRepository $repository, UserServiceInterface $userService, MessageBusInterface $bus,
         SerializerInterface $serializer, Security $security, ValidatorInterface $validator
@@ -43,6 +47,10 @@ class GreetingService implements GreetingServiceInterface
         $this->serializer = $serializer;
         $this->security = $security;
         $this->validator = $validator;
+
+        /** @var \App\Modules\User\Infrastructure\Security\AuthUser $authUser */
+        $authUser = $this->security->getUser();
+        $this->authUser = $authUser;
     }
 
     /**
@@ -75,6 +83,7 @@ class GreetingService implements GreetingServiceInterface
             // UI subscriber must be able to detect that a new entity was created.
             'reason' => 'create',
             'causer' => $this->serializer->normalize($author, 'json', ['groups' => ['greeting']]),
+            'deviceId' => $this->authUser?->getDeviceId(),
         ];
 
         $this->bus->dispatch(new MercureUpdateMessage('https://symfony.test/greetings', $payload));
@@ -153,6 +162,7 @@ class GreetingService implements GreetingServiceInterface
             // UI subscriber must be able to detect that one of existing greetings was updated.
             'reason' => 'update',
             'causer' => $this->serializer->normalize($causer, 'json', ['groups' => ['greeting']]),
+            'deviceId' => $this->authUser?->getDeviceId(),
         ];
 
         // Entity update event.
@@ -192,6 +202,7 @@ class GreetingService implements GreetingServiceInterface
             // UI subscriber must be able to detect that one of existing greetings was deleted.
             'reason' => 'delete',
             'causer' => $this->serializer->normalize($causer, 'json', ['groups' => ['greeting']]),
+            'deviceId' => $this->authUser->getDeviceId(),
         ];
 
         $this->repository->delete($greeting);
