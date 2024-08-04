@@ -56,6 +56,8 @@ class GreetingTest extends DatabaseTestCase
         // Check that we send additional data along with greetings text.
         $this->assertNotEmpty($message->getPayload()['causer']);
         $this->assertNotEmpty($message->getPayload()['reason']);
+        // Greeting created in a web browser never provide device id.
+        $this->assertNull($message->getPayload()['deviceId']);
 
         $this->transport('async')->process(1);
         $this->transport('async')->queue()->assertEmpty();
@@ -267,6 +269,8 @@ class GreetingTest extends DatabaseTestCase
         // Check that we send additional data along with greetings text.
         $this->assertNotEmpty($message->getPayload()['causer']);
         $this->assertNotEmpty($message->getPayload()['reason']);
+        // Greeting updated in a web browser never provide device id.
+        $this->assertNull($message->getPayload()['deviceId']);
 
         // On greeting update we also publish generic list update message.
         $this->transport('async')->process(2);
@@ -420,6 +424,8 @@ class GreetingTest extends DatabaseTestCase
         $this->assertEquals('delete', $payload['reason']);
         $this->assertEquals($greeting->getId(), $payload['greeting']['id']);
         $this->assertEquals($user['user']->getId(), $payload['causer']['id']);
+        // Greeting deleted in a web browser never provide device id.
+        $this->assertNull($payload['deviceId']);
     }
 
     public function test_we_can_delete_a_greeting_app(): void

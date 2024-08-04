@@ -1,9 +1,4 @@
 <?php
-/**
- * User: Alex
- * Date: 21.05.2024
- * Time: 12:13
- */
 
 namespace App\Modules\Greeting\Domain;
 
