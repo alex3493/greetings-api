@@ -34,7 +34,6 @@ class GreetingService implements GreetingServiceInterface
 
     private ValidatorInterface $validator;
 
-    /** @var \App\Modules\User\Infrastructure\Security\AuthUser | null $authUser */
     private ?AuthUser $authUser;
 
     public function __construct(
@@ -83,6 +82,7 @@ class GreetingService implements GreetingServiceInterface
             // UI subscriber must be able to detect that a new entity was created.
             'reason' => 'create',
             'causer' => $this->serializer->normalize($author, 'json', ['groups' => ['greeting']]),
+            // Mobile app subscriber should be able to act differently if event was caused by self.
             'deviceId' => $this->authUser?->getDeviceId(),
         ];
 
@@ -162,6 +162,7 @@ class GreetingService implements GreetingServiceInterface
             // UI subscriber must be able to detect that one of existing greetings was updated.
             'reason' => 'update',
             'causer' => $this->serializer->normalize($causer, 'json', ['groups' => ['greeting']]),
+            // Mobile app subscriber should be able to act differently if event was caused by self.
             'deviceId' => $this->authUser?->getDeviceId(),
         ];
 
@@ -202,6 +203,7 @@ class GreetingService implements GreetingServiceInterface
             // UI subscriber must be able to detect that one of existing greetings was deleted.
             'reason' => 'delete',
             'causer' => $this->serializer->normalize($causer, 'json', ['groups' => ['greeting']]),
+            // Mobile app subscriber should be able to act differently if event was caused by self.
             'deviceId' => $this->authUser->getDeviceId(),
         ];
 
