@@ -37,7 +37,6 @@ class GreetingRepository extends ServiceEntityRepository
 
     /**
      * TODO: Currently not used.
-     *
      * @param int $limit
      * @param int $offset
      * @return array
