@@ -34,6 +34,7 @@ class UserSeeder extends SeederBase
      * @param bool $withJwt
      * @return array
      * @throws \Random\RandomException
+     * @throws \App\Modules\Shared\Domain\Exception\UnprocessableEntityDomainException
      */
     public function seedUser(array $options = [], array $withTokens = [], bool $withJwt = false): array
     {

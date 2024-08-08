@@ -9,7 +9,7 @@ use App\Tests\Seeder\GreetingSeeder;
 
 class GreetingTest extends DatabaseTestCase
 {
-    public function test_we_can_create_a_greeting(): void
+    public function test_we_can_create_a_greeting_web(): void
     {
         $user = static::$userSeeder->seedUser([
             'email' => 'test@example.com',
@@ -27,7 +27,7 @@ class GreetingTest extends DatabaseTestCase
             'text' => 'Hi, there!',
             'variant' => 'primary',
         ], [
-            'HTTP_Authorization' => 'Bearer ' . $token,
+            'HTTP_Authorization' => 'Bearer '.$token,
         ]);
 
         $response = json_decode($client->getResponse()->getContent());
@@ -56,6 +56,75 @@ class GreetingTest extends DatabaseTestCase
         // Check that we send additional data along with greetings text.
         $this->assertNotEmpty($message->getPayload()['causer']);
         $this->assertNotEmpty($message->getPayload()['reason']);
+        // Greeting created in a web browser never provide device id.
+        $this->assertNull($message->getPayload()['deviceId']);
+
+        $this->transport('async')->process(1);
+        $this->transport('async')->queue()->assertEmpty();
+
+        // Check that the greeting was persisted.
+        $repository = $this->getRepository(Greeting::class);
+        $greetings = $repository->findAll();
+
+        $this->assertCount(1, $greetings);
+        $this->assertEquals($greeting->id, $greetings[0]->getId());
+
+        $this->assertEmpty($greetings[0]->getUpdatedBy());
+        $this->assertEmpty($greetings[0]->getUpdatedAt());
+    }
+
+    public function test_we_can_create_a_greeting_app(): void
+    {
+        $user = static::$userSeeder->seedUser([
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'firstName' => 'First',
+            'lastName' => 'Last',
+            'roles' => ['ROLE_USER'],
+        ], [
+            ['name' => 'iPhone 15'],
+        ]);
+
+        $token = $user['app_token'];
+
+        $client = self::getReusableClient();
+
+        $client->jsonRequest('POST', '/api/app/greetings', [
+            'text' => 'Hi, there!',
+            'variant' => 'primary',
+        ], [
+            'HTTP_Authorization' => 'Bearer '.$token,
+        ]);
+
+        $response = json_decode($client->getResponse()->getContent());
+
+        $discoveryLink = $client->getResponse()->headers->get('link');
+        $this->assertStringContainsString('.well-known/mercure', $discoveryLink);
+
+        $this->assertResponseIsSuccessful();
+
+        $greeting = $response->greeting;
+        $this->assertNotEmpty($greeting->id);
+        $this->assertEquals('Hi, there!', $greeting->text);
+        $this->assertEquals('primary', $greeting->variant->name);
+        $this->assertEquals($user['user']->getId(), $greeting->author->id);
+
+        // Execute queue worker to publish Mercure update.
+        $this->transport('async')->queue()->assertNotEmpty();
+
+        // Check that we have queued the message of correct class.
+        $event = $this->transport('async')->queue()->first();
+        $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
+
+        /** @var MercureUpdateMessage $message */
+        $message = $event->getMessage();
+
+        // Check that we send additional data along with greetings text.
+        $this->assertNotEmpty($message->getPayload()['causer']);
+        $this->assertNotEmpty($message->getPayload()['reason']);
+        // When we create a greeting in mobile app, we also include device id in payload.
+        // For now, we are using device name from token as id.
+        $this->assertEquals('iPhone 15', $message->getPayload()['deviceId']);
 
         $this->transport('async')->process(1);
         $this->transport('async')->queue()->assertEmpty();
@@ -88,7 +157,7 @@ class GreetingTest extends DatabaseTestCase
         $greetings = [];
         for ($i = 0; $i < 10; $i++) {
             $greetings[] = $greetingSeeder->seedGreeting($user['user'], [
-                'text' => 'Greeting-' . $i,
+                'text' => 'Greeting-'.$i,
                 'variant' => $i % 2 ? 'primary' : 'secondary',
             ]);
         }
@@ -96,7 +165,7 @@ class GreetingTest extends DatabaseTestCase
         $client = self::getReusableClient();
 
         $client->jsonRequest('GET', '/api/web/greetings?limit=10&offset=0', [], [
-            'HTTP_Authorization' => 'Bearer ' . $token,
+            'HTTP_Authorization' => 'Bearer '.$token,
         ]);
 
         $response = json_decode($client->getResponse()->getContent());
@@ -127,7 +196,7 @@ class GreetingTest extends DatabaseTestCase
         $greetings = [];
         for ($i = 0; $i < 20; $i++) {
             $greetings[] = $greetingSeeder->seedGreeting($user['user'], [
-                'text' => 'Greeting-' . $i,
+                'text' => 'Greeting-'.$i,
                 'variant' => $i % 2 ? 'primary' : 'secondary',
             ]);
         }
@@ -136,8 +205,8 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('GET', '/api/web/greetings?limit=10&beforeId=' . $beforeId, [], [
-            'HTTP_Authorization' => 'Bearer ' . $token,
+        $client->jsonRequest('GET', '/api/web/greetings?limit=10&beforeId='.$beforeId, [], [
+            'HTTP_Authorization' => 'Bearer '.$token,
         ]);
 
         $this->assertResponseIsSuccessful();
@@ -148,7 +217,7 @@ class GreetingTest extends DatabaseTestCase
         $this->assertEquals('Greeting-9', $response->greetings[0]->text);
     }
 
-    public function test_we_can_update_a_greeting(): void
+    public function test_we_can_update_a_greeting_web(): void
     {
         $user = static::$userSeeder->seedUser([
             'email' => 'test@example.com',
@@ -169,11 +238,11 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('PATCH', '/api/web/greeting/' . $greeting->getId(), [
+        $client->jsonRequest('PATCH', '/api/web/greeting/'.$greeting->getId(), [
             'text' => 'Updated greeting',
             'variant' => 'warning',
         ], [
-            'HTTP_Authorization' => 'Bearer ' . $token,
+            'HTTP_Authorization' => 'Bearer '.$token,
         ]);
 
         $response = json_decode($client->getResponse()->getContent());
@@ -190,7 +259,7 @@ class GreetingTest extends DatabaseTestCase
         $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
 
         // Check that affected greeting id is included into update topic.
-        $this->assertStringEndsWith('/greeting/' . $greeting->getId(), $event->getMessage()->getTopic());
+        $this->assertStringEndsWith('/greeting/'.$greeting->getId(), $event->getMessage()->getTopic());
 
         $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
 
@@ -200,6 +269,8 @@ class GreetingTest extends DatabaseTestCase
         // Check that we send additional data along with greetings text.
         $this->assertNotEmpty($message->getPayload()['causer']);
         $this->assertNotEmpty($message->getPayload()['reason']);
+        // Greeting updated in a web browser never provide device id.
+        $this->assertNull($message->getPayload()['deviceId']);
 
         // On greeting update we also publish generic list update message.
         $this->transport('async')->process(2);
@@ -218,7 +289,82 @@ class GreetingTest extends DatabaseTestCase
         $this->assertNotEmpty($persistedGreeting->getUpdatedAt());
     }
 
-    public function test_we_can_delete_a_greeting(): void
+    public function test_we_can_update_a_greeting_app(): void
+    {
+        $user = static::$userSeeder->seedUser([
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'firstName' => 'First',
+            'lastName' => 'Last',
+            'roles' => ['ROLE_USER'],
+        ], [
+            ['name' => 'iPhone 15'],
+        ]);
+
+        $token = $user['app_token'];
+
+        $greetingSeeder = new GreetingSeeder($this->getEntityManager());
+
+        $greeting = $greetingSeeder->seedGreeting($user['user'], [
+            'text' => 'Hi, there!',
+            'variant' => 'primary',
+        ]);
+
+        $client = self::getReusableClient();
+
+        $client->jsonRequest('PATCH', '/api/app/greeting/'.$greeting->getId(), [
+            'text' => 'Updated greeting',
+            'variant' => 'warning',
+        ], [
+            'HTTP_Authorization' => 'Bearer '.$token,
+        ]);
+
+        $response = json_decode($client->getResponse()->getContent());
+
+        $this->assertResponseIsSuccessful();
+
+        $this->assertEquals($greeting->getId(), $response->greeting->id);
+
+        // Execute queue worker to publish Mercure update.
+        $this->transport('async')->queue()->assertNotEmpty();
+
+        // Check that we have queued the message of correct class.
+        $event = $this->transport('async')->queue()->first();
+        $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
+
+        // Check that affected greeting id is included into update topic.
+        $this->assertStringEndsWith('/greeting/'.$greeting->getId(), $event->getMessage()->getTopic());
+
+        $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
+
+        /** @var MercureUpdateMessage $message */
+        $message = $event->getMessage();
+
+        // Check that we send additional data along with greetings text.
+        $this->assertNotEmpty($message->getPayload()['causer']);
+        $this->assertNotEmpty($message->getPayload()['reason']);
+        // When we update a greeting in mobile app, we also include device id in payload.
+        // For now, we are using device name from token as id.
+        $this->assertEquals('iPhone 15', $message->getPayload()['deviceId']);
+
+        // On greeting update we also publish generic list update message.
+        $this->transport('async')->process(2);
+        $this->transport('async')->queue()->assertEmpty();
+
+        // Check that the greeting was persisted.
+        $repository = $this->getRepository(Greeting::class);
+
+        /** @var \App\Modules\Greeting\Domain\Greeting $persistedGreeting */
+        $persistedGreeting = $repository->find($greeting->getId());
+
+        $this->assertEquals('Updated greeting', $persistedGreeting->getText());
+        $this->assertEquals('warning', $persistedGreeting->getVariant()->getName());
+
+        $this->assertNotEmpty($persistedGreeting->getUpdatedBy()->getId());
+        $this->assertNotEmpty($persistedGreeting->getUpdatedAt());
+    }
+
+    public function test_we_can_delete_a_greeting_web(): void
     {
         $user = static::$userSeeder->seedUser([
             'email' => 'test@example.com',
@@ -239,8 +385,8 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('DELETE', '/api/web/greeting/' . $greeting->getId(), [], [
-            'HTTP_Authorization' => 'Bearer ' . $token,
+        $client->jsonRequest('DELETE', '/api/web/greeting/'.$greeting->getId(), [], [
+            'HTTP_Authorization' => 'Bearer '.$token,
         ]);
 
         $response = json_decode($client->getResponse()->getContent());
@@ -265,7 +411,7 @@ class GreetingTest extends DatabaseTestCase
         $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
 
         // Check that affected greeting id is included into update topic.
-        $this->assertStringEndsWith('/greeting/' . $greeting->getId(), $event->getMessage()->getTopic());
+        $this->assertStringEndsWith('/greeting/'.$greeting->getId(), $event->getMessage()->getTopic());
 
         $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
 
@@ -278,6 +424,75 @@ class GreetingTest extends DatabaseTestCase
         $this->assertEquals('delete', $payload['reason']);
         $this->assertEquals($greeting->getId(), $payload['greeting']['id']);
         $this->assertEquals($user['user']->getId(), $payload['causer']['id']);
+        // Greeting deleted in a web browser never provide device id.
+        $this->assertNull($payload['deviceId']);
+    }
+
+    public function test_we_can_delete_a_greeting_app(): void
+    {
+        $user = static::$userSeeder->seedUser([
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'firstName' => 'First',
+            'lastName' => 'Last',
+            'roles' => ['ROLE_USER'],
+        ], [
+            ['name' => 'iPhone 15'],
+        ]);
+
+        $token = $user['app_token'];
+
+        $greetingSeeder = new GreetingSeeder($this->getEntityManager());
+
+        $greeting = $greetingSeeder->seedGreeting($user['user'], [
+            'text' => 'Hi, there!',
+            'variant' => 'primary',
+        ]);
+
+        $client = self::getReusableClient();
+
+        $client->jsonRequest('DELETE', '/api/app/greeting/'.$greeting->getId(), [], [
+            'HTTP_Authorization' => 'Bearer '.$token,
+        ]);
+
+        $response = json_decode($client->getResponse()->getContent());
+
+        $this->assertResponseIsSuccessful();
+
+        $this->assertEquals('Greeting deleted', $response->message);
+
+        // Check that the greeting was deleted.
+        $repository = $this->getRepository(Greeting::class);
+
+        $this->assertNull($repository->find($greeting->getId()));
+
+        // Execute queue worker to publish Mercure update.
+        $this->transport('async')->queue()->assertNotEmpty();
+
+        // We send both list and item update messages.
+        $this->transport('async')->queue()->assertCount(2);
+
+        // Check that we have queued the message of correct class.
+        $event = $this->transport('async')->queue()->first();
+        $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
+
+        // Check that affected greeting id is included into update topic.
+        $this->assertStringEndsWith('/greeting/'.$greeting->getId(), $event->getMessage()->getTopic());
+
+        $this->assertInstanceOf(MercureUpdateMessage::class, $event->getMessage());
+
+        /** @var MercureUpdateMessage $message */
+        $message = $event->getMessage();
+
+        $payload = $message->getPayload();
+
+        // Check the payload.
+        $this->assertEquals('delete', $payload['reason']);
+        $this->assertEquals($greeting->getId(), $payload['greeting']['id']);
+        $this->assertEquals($user['user']->getId(), $payload['causer']['id']);
+        // When we delete a greeting in mobile app, we also include device id in payload.
+        // For now, we are using device name from token as id.
+        $this->assertEquals('iPhone 15', $payload['deviceId']);
     }
 
     public function test_we_can_read_a_greeting(): void
@@ -301,8 +516,8 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('GET', '/api/web/greeting/' . $greeting->getId(), [], [
-            'HTTP_Authorization' => 'Bearer ' . $token,
+        $client->jsonRequest('GET', '/api/web/greeting/'.$greeting->getId(), [], [
+            'HTTP_Authorization' => 'Bearer '.$token,
         ]);
 
         $discoveryLink = $client->getResponse()->headers->get('link');
@@ -344,11 +559,11 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('PATCH', '/api/web/greeting/' . $greeting->getId(), [
+        $client->jsonRequest('PATCH', '/api/web/greeting/'.$greeting->getId(), [
             'text' => 'Updated greeting',
             'variant' => 'warning',
         ], [
-            'HTTP_Authorization' => 'Bearer ' . $token,
+            'HTTP_Authorization' => 'Bearer '.$token,
         ]);
 
         $this->assertResponseStatusCodeSame(403);
@@ -383,11 +598,11 @@ class GreetingTest extends DatabaseTestCase
 
         $client = self::getReusableClient();
 
-        $client->jsonRequest('PATCH', '/api/web/greeting/' . $greeting->getId(), [
+        $client->jsonRequest('PATCH', '/api/web/greeting/'.$greeting->getId(), [
             'text' => 'Updated greeting',
             'variant' => 'warning',
         ], [
-            'HTTP_Authorization' => 'Bearer ' . $token,
+            'HTTP_Authorization' => 'Bearer '.$token,
         ]);
 
         $this->assertResponseIsSuccessful();
@@ -420,7 +635,7 @@ class GreetingTest extends DatabaseTestCase
             'text' => '     ', // Check that trim normalizer works as expected.
             'variant' => 'primary',
         ], [
-            'HTTP_Authorization' => 'Bearer ' . $token,
+            'HTTP_Authorization' => 'Bearer '.$token,
         ]);
 
         $response = json_decode($client->getResponse()->getContent());

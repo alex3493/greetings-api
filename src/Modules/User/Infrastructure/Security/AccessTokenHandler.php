@@ -38,7 +38,7 @@ class AccessTokenHandler implements AccessTokenHandlerInterface
 
         // We decouple domain user and auth-user, so have to provide user loader closure.
         return new UserBadge($accessToken->getUser()->getUserIdentifier(), function () use ($accessToken) {
-            return new AuthUser($accessToken->getUser());
+            return new AuthUser($accessToken->getUser(), $accessToken->getName());
         });
     }
 }
