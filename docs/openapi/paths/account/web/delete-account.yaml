@@ -21,7 +21,7 @@ post:
         401:
             $ref: '../../../openapi.yaml#/components/responses/UnauthorizedJWTError'
         422:
-            description: Change password request error - provided data is invalid
+            description: Delete account request error - provided data is invalid
             content:
                 application/json:
                     schema:
