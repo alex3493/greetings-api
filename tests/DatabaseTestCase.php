@@ -53,10 +53,12 @@ class DatabaseTestCase extends WebTestCase
             throw new LogicException('Execution only in Test environment possible!');
         }
 
-        $platform = $this->getContainer()->get('doctrine')->getConnection()->getDatabasePlatform();
+        $connection = $this->getContainer()->get('doctrine')->getConnection();
+        $platform = $connection->getDatabasePlatform();
         if ($platform instanceof SqlitePlatform) {
             // When testing against Sqlite database we must do special init.
             $this->initDatabase();
+            $connection->exec("PRAGMA foreign_keys = ON;");
         }
 
         $container = static::getContainer();
