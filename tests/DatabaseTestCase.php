@@ -58,7 +58,7 @@ class DatabaseTestCase extends WebTestCase
         if ($platform instanceof SqlitePlatform) {
             // When testing against Sqlite database we must do special init.
             $this->initDatabase();
-            $connection->exec("PRAGMA foreign_keys = ON;");
+            $connection->executeStatement("PRAGMA foreign_keys = ON;");
         }
 
         $container = static::getContainer();
